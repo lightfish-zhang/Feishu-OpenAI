@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"fmt"
+	"strings"
 
 	"start-feishubot/services/openai"
 )
@@ -24,14 +25,16 @@ func (*MessageAction) Execute(a *ActionInfo) bool {
 	}
 	msg = append(msg, completions)
 	a.handler.sessionCache.SetMsg(*a.info.sessionId, msg)
+
+	content := strings.ReplaceAll(completions.Content, "\n\t", "\n")
 	//if new topic
 	if len(msg) == 2 {
 		//fmt.Println("new topic", msg[1].Content)
 		sendNewTopicCard(*a.ctx, a.info.sessionId, a.info.msgId,
-			completions.Content)
+			content)
 		return false
 	}
-	err = replyMsg(*a.ctx, completions.Content, a.info.msgId)
+	err = replyMsg(*a.ctx, content, a.info.msgId)
 	if err != nil {
 		replyMsg(*a.ctx, fmt.Sprintf(
 			"🤖️：消息机器人摆烂了，请稍后再试～\n错误信息: %v", err), a.info.msgId)

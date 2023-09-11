@@ -72,7 +72,7 @@ func (*PicAction) Execute(a *ActionInfo) bool {
 		//图片校验
 		err = openai.VerifyPngs([]string{f})
 		if err != nil {
-			replyMsg(*a.ctx, fmt.Sprintf("🤖️：无法解析图片，请发送原图并尝试重新操作～"),
+			replyMsg(*a.ctx, fmt.Sprintf("🤖️：无法解析图片\n错误信息: %v", err),
 				a.info.msgId)
 			return false
 		}
